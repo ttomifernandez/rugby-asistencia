@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b1a0e">
+<title>Rugby · Asistencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2316a34a'/><ellipse cx='50' cy='50' rx='26' ry='18' stroke='white' stroke-width='7' fill='none' transform='rotate(-25 50 50)'/><line x1='28' y1='57' x2='72' y2='43' stroke='white' stroke-width='6' stroke-linecap='round'/></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0b1a0e;--bg2:#0f2213;--card:#132019;--card2:#1a2e1e;
+  --border:#1e3d28;--border2:#2a5636;
+  --txt:#e4f0e8;--muted:#6ea87e;--muted2:#445c4d;
+  --green:#22c55e;--green2:#4ade80;--green-dim:rgba(34,197,94,.11);
+  --red:#ef4444;--amber:#f59e0b;
+  --shadow:0 8px 24px -8px rgba(0,0,0,.6);
+  --radius:16px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--txt);overscroll-behavior-y:none;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:0;height:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+.app{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:calc(84px + var(--safe-b))}
+.hidden{display:none!important}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(11,26,14,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:13px 18px;}
+.brand{display:flex;align-items:center;gap:10px;flex:1}
+.brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round}
+.brand-name{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.brand-name span{color:var(--green2)}
+.topbar-sub{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;z-index:50;background:rgba(11,26,14,.94);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;padding:8px 0 calc(8px + var(--safe-b))}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;font-size:11px;font-weight:600;color:var(--muted2);transition:color .15s;border:none;background:none;cursor:pointer}
+.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
+.nav-btn.active{color:var(--green)}
+
+/* FAB */
+.fab{position:fixed;bottom:calc(76px + var(--safe-b));right:max(18px,calc(50% - 260px + 18px));z-index:40;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#15803d,#22c55e);box-shadow:0 8px 24px -4px rgba(21,128,61,.55);display:flex;align-items:center;justify-content:center;transition:transform .15s;animation:fabIn .55s cubic-bezier(.2,.85,.3,1.25) .1s backwards}
+.fab:active{transform:scale(.91)}
+.fab svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* VIEWS */
+.view{padding:16px 16px 8px}
+.view-title{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px;animation:fadeUp .35s ease backwards}
+.view-sub{font-size:13px;color:var(--muted);margin-bottom:18px;animation:fadeUp .35s .03s ease backwards}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-head h3{font-size:14px;font-weight:700}
+.count-pill{font-size:12px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--card2);color:var(--muted)}
+
+/* SESSION CARDS */
+.session-list{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.session-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:13px;transition:transform .12s,border-color .15s;animation:cardIn .4s cubic-bezier(.2,.75,.3,1) backwards;animation-delay:calc(var(--i,0)*40ms)}
+.session-card:active{transform:scale(.98)}
+.session-date-box{flex-shrink:0;width:46px;text-align:center;background:var(--green-dim);border-radius:11px;padding:7px 4px;border:1px solid rgba(34,197,94,.18)}
+.session-day{font-size:22px;font-weight:900;color:var(--green);line-height:1}
+.session-month{font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.session-info{flex:1;min-width:0}
+.session-tipo{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.session-desc{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.session-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.session-right{flex-shrink:0;text-align:right}
+.att-count{font-size:20px;font-weight:900;line-height:1}
+.att-total{font-size:11px;color:var(--muted);font-weight:600}
+.att-bar{width:40px;height:4px;background:var(--border2);border-radius:2px;margin-top:5px}
+.att-bar-fill{height:100%;border-radius:2px;background:var(--green);transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* ATTENDANCE VIEW */
+.att-header{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 15px;margin-bottom:14px;position:sticky;top:62px;z-index:30}
+.att-tipo{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.att-title{font-size:16px;font-weight:800;margin-bottom:1px}
+.att-subtitle{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.att-counter-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px}
+.att-big-num{font-size:36px;font-weight:900;color:var(--green);line-height:1}
+.att-big-den{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.att-pct-label{font-size:13px;font-weight:700;color:var(--muted)}
+.att-bigbar{height:7px;background:var(--border2);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.att-bigbar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:4px;transition:width .3s cubic-bezier(.4,0,.2,1)}
+.att-actions{display:flex;gap:8px}
+.btn-sm{padding:8px 0;border-radius:10px;font-size:12.5px;font-weight:700;border:1px solid var(--border);background:var(--card2);color:var(--muted);flex:1;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-sm:active{transform:scale(.95)}
+.btn-sm svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn-sm.danger{color:#fca5a5;border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.09);flex:none;width:40px;padding:8px 0}
+
+/* PLAYER GRID */
+.player-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px}
+.player-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:13px 12px;cursor:pointer;transition:all .14s;user-select:none;-webkit-user-select:none;animation:cardIn .42s cubic-bezier(.2,.75,.3,1) backwards;animation-delay:calc(var(--i,0)*28ms);min-height:110px;display:flex;flex-direction:column}
+.player-card:active{transform:scale(.94)}
+.player-card.presente{background:rgba(34,197,94,.10);border-color:rgba(34,197,94,.42)}
+.player-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.player-num{font-size:11px;font-weight:700;color:var(--muted2)}
+.player-card.presente .player-num{color:var(--green)}
+.player-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
+.player-card.presente .player-check{background:var(--green);border-color:var(--green)}
+.check-svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .14s}
+.player-card.presente .check-svg{opacity:1}
+.player-name{font-size:14px;font-weight:800;line-height:1.25;margin-bottom:4px;flex:1}
+.player-card.presente .player-name{color:var(--green2)}
+.player-pos{font-size:11.5px;font-weight:600;color:var(--muted)}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 14px;animation:fadeUp .38s ease backwards;animation-delay:calc(var(--i,0)*50ms)}
+.stat-card.full{grid-column:1/-1}
+.stat-val{font-size:32px;font-weight:900;color:var(--green);line-height:1;margin-bottom:3px}
+.stat-label{font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.4}
+.chart-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 14px 10px;margin-bottom:18px;animation:fadeUp .4s .12s ease backwards}
+.chart-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.chart-bars{display:flex;align-items:flex-end;gap:5px;height:72px;padding-bottom:0}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.chart-bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end}
+.chart-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s cubic-bezier(.4,0,.2,1)}
+.chart-lbl{font-size:8.5px;color:var(--muted2);font-weight:700;text-align:center;white-space:nowrap}
+.chart-val{font-size:8.5px;color:var(--muted);font-weight:800}
+
+/* PLAYER STATS LIST */
+.player-stats-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 14px 6px;animation:fadeUp .4s .18s ease backwards}
+.pstat{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border)}
+.pstat:last-child{border-bottom:none}
+.pstat-rank{width:22px;text-align:center;font-size:13px;font-weight:900;color:var(--muted2);flex-shrink:0}
+.pstat-rank.r1{color:#fbbf24}.pstat-rank.r2{color:#94a3b8}.pstat-rank.r3{color:#d97706}
+.pstat-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.pstat-info{flex:1;min-width:0}
+.pstat-name{font-size:13.5px;font-weight:700;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pstat-pos{font-size:11px;color:var(--muted);font-weight:600}
+.pstat-bar-wrap{height:3px;background:var(--border2);border-radius:2px;margin-top:4px;overflow:hidden}
+.pstat-bar{height:100%;background:var(--green);border-radius:2px}
+.pstat-right{flex-shrink:0;text-align:right}
+.pstat-pct{font-size:15px;font-weight:900}
+.pstat-det{font-size:11px;color:var(--muted);font-weight:600}
+
+/* PLANTEL */
+.plantel-card{background:var(--card);border:1px solid var(--border);border-radius:13px;display:flex;align-items:center;gap:12px;padding:12px 13px;margin-bottom:8px;animation:fadeUp .35s ease backwards;animation-delay:calc(var(--i,0)*22ms)}
+.pj-num{width:32px;height:32px;border-radius:9px;background:var(--green-dim);border:1px solid rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--green);flex-shrink:0}
+.pj-info{flex:1;min-width:0}
+.pj-name{font-size:14px;font-weight:700;margin-bottom:1px}
+.pj-pos{font-size:12px;color:var(--muted);font-weight:600}
+.pj-del{width:34px;height:34px;border-radius:10px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .13s}
+.pj-del:active{transform:scale(.91)}
+.pj-del svg{width:16px;height:16px;stroke:#ef4444;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* SHEET */
+.sheet-scrim{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:80;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet-scrim.open{opacity:1;pointer-events:all}
+.sheet{position:fixed;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:520px;bottom:0;z-index:90;background:var(--bg2);border-radius:22px 22px 0 0;border-top:1px solid var(--border);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:88vh;display:flex;flex-direction:column}
+.sheet.open{transform:translateX(-50%) translateY(0)}
+.sheet-grab{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:10px auto 0;flex-shrink:0}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;flex-shrink:0;border-bottom:1px solid var(--border)}
+.sheet-head h3{font-size:16px;font-weight:800}
+.sheet-close{width:30px;height:30px;border-radius:8px;background:var(--card);display:flex;align-items:center;justify-content:center}
+.sheet-close svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round}
+.sheet-body{padding:16px 18px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+/* FORMS */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--txt);font-size:15px;appearance:none}
+.field input:focus,.field select:focus{outline:none;border-color:var(--green)}
+.field select option{background:var(--card);color:var(--txt)}
+.tipo-chips{display:flex;flex-wrap:wrap;gap:7px}
+.tipo-chip{padding:8px 13px;border-radius:10px;font-size:13px;font-weight:700;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .13s}
+.tipo-chip.sel{background:var(--green-dim);border-color:rgba(34,197,94,.4);color:var(--green2)}
+.tipo-chip:active{transform:scale(.95)}
+
+/* BUTTONS */
+.btn{width:100%;padding:14px;border-radius:13px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;margin-bottom:10px;border:none}
+.btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;box-shadow:0 4px 16px -4px rgba(21,128,61,.4)}
+.btn-ghost{background:var(--card);color:var(--txt);border:1px solid var(--border)}
+.btn-danger{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.22)}
+.btn-row{display:flex;gap:10px}
+.btn-row .btn{flex:1;margin:0}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(84px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:10px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;z-index:200;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px}
+.empty-ico{width:58px;height:58px;border-radius:18px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.empty-ico svg{width:26px;height:26px;stroke:var(--muted);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.empty h4{font-size:17px;font-weight:800;margin-bottom:6px}
+.empty p{font-size:13.5px;color:var(--muted);line-height:1.55}
+
+/* BACK BTN */
+.back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;font-weight:700;padding:2px 0;margin-bottom:14px;background:none;border:none;cursor:pointer}
+.back-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+/* ANIMATIONS */
+@keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fabIn{from{opacity:0;transform:scale(.4) translateY(24px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="7" ry="5" transform="rotate(-25 12 12)"/><line x1="5.5" y1="14" x2="18.5" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Rugby<span>·Plantel</span></div>
+        <div class="topbar-sub" id="topbar-sub">Asistencia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEWS -->
+  <div id="view-sessions" class="view"></div>
+  <div id="view-stats" class="view hidden"></div>
+  <div id="view-plantel" class="view hidden"></div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="openNewSession()" aria-label="Nueva sesión">
+  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-sessions" onclick="nav('sessions')">
+    <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+    Sesiones
+  </button>
+  <button class="nav-btn" id="nav-stats" onclick="nav('stats')">
+    <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+    Estadísticas
+  </button>
+  <button class="nav-btn" id="nav-plantel" onclick="nav('plantel')">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    Plantel
+  </button>
+</nav>
+
+<!-- SHEET -->
+<div class="sheet-scrim" id="sheet-scrim" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head">
+    <h3 id="sheet-title">Nueva sesión</h3>
+    <button class="sheet-close" onclick="closeSheet()"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="sheet-body" id="sheet-body"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   CONSTANTS
+══════════════════════════════════════════════ */
+const LS_KEY = 'rugby-asistencia-v1';
+
+const POS_LABELS = {
+  PR:'Pilier D.', H:'Hooker', PP:'Pilier I.', L:'Lock',
+  F:'Flanker', N8:'Nº 8', SH:'Scrum Half',
+  FH:'Apertura', C:'Centro', W:'Ala', FB:'Full'
+};
+
+const SESSION_TYPES = ['Entrenamiento','Físico','Técnico','Táctico','Scrum','Lineout','Partido'];
+
+const TYPE_COLORS = {
+  Entrenamiento:'#22c55e', Físico:'#3b82f6', Técnico:'#a855f7',
+  Táctico:'#f59e0b', Scrum:'#f97316', Lineout:'#14b8a6', Partido:'#ef4444'
+};
+
+const AVATAR_G = [
+  ['#6366f1','#818cf8'],['#3b82f6','#60a5fa'],['#a855f7','#c084fc'],
+  ['#ec4899','#f472b6'],['#14b8a6','#2dd4bf'],['#f59e0b','#fbbf24'],['#22c55e','#4ade80']
+];
+
+/* ══════════════════════════════════════════════
+   SAMPLE DATA
+══════════════════════════════════════════════ */
+const SAMPLE_PLAYERS = [
+  {id:'p01',nombre:'Lucas Fernández',numero:1,posicion:'PR'},
+  {id:'p02',nombre:'Matías Torres',numero:2,posicion:'H'},
+  {id:'p03',nombre:'Ramiro González',numero:3,posicion:'PP'},
+  {id:'p04',nombre:'Franco Rodríguez',numero:4,posicion:'L'},
+  {id:'p05',nombre:'Nicolás Pérez',numero:5,posicion:'L'},
+  {id:'p06',nombre:'Tomás Martínez',numero:6,posicion:'F'},
+  {id:'p07',nombre:'Santiago López',numero:7,posicion:'F'},
+  {id:'p08',nombre:'Joaquín Díaz',numero:8,posicion:'N8'},
+  {id:'p09',nombre:'Agustín Gómez',numero:9,posicion:'SH'},
+  {id:'p10',nombre:'Ignacio Suárez',numero:10,posicion:'FH'},
+  {id:'p11',nombre:'Sebastián Castro',numero:11,posicion:'W'},
+  {id:'p12',nombre:'Ezequiel Morales',numero:12,posicion:'C'},
+  {id:'p13',nombre:'Gabriel Romero',numero:13,posicion:'C'},
+  {id:'p14',nombre:'Rodrigo Giménez',numero:14,posicion:'W'},
+  {id:'p15',nombre:'Pablo Herrera',numero:15,posicion:'FB'},
+  {id:'p16',nombre:'Cristian Vargas',numero:16,posicion:'PR'},
+  {id:'p17',nombre:'Andrés Molina',numero:17,posicion:'PP'},
+  {id:'p18',nombre:'Diego Acosta',numero:18,posicion:'L'},
+  {id:'p19',nombre:'Mauricio Silva',numero:19,posicion:'F'},
+  {id:'p20',nombre:'Federico Ríos',numero:20,posicion:'SH'},
+];
+
+function mkSession(id, dateStr, tipo, desc, pids){
+  return {id, fecha: new Date(dateStr+'T12:00:00').getTime(), tipo, descripcion: desc, presentes: pids, createdAt: Date.now()};
+}
+
+const SAMPLE_SESSIONS = [
+  mkSession('s01','2026-06-25','Entrenamiento','Pretemporada · fuerza y velocidad',
+    ['p01','p02','p03','p04','p06','p07','p08','p09','p10','p12','p13','p14','p15','p16','p19']),
+  mkSession('s02','2026-06-23','Técnico','Trabajo de lineout y melé',
+    ['p01','p02','p03','p04','p05','p07','p09','p10','p11','p12','p15','p17','p18']),
+  mkSession('s03','2026-06-21','Físico','Resistencia aeróbica + circuito',
+    ['p01','p02','p04','p06','p07','p08','p09','p10','p12','p14','p15','p19','p20']),
+  mkSession('s04','2026-06-18','Táctico','Jugadas de backs · ataque',
+    ['p01','p03','p05','p07','p09','p10','p11','p12','p13','p14','p15','p16']),
+  mkSession('s05','2026-06-16','Lineout','Práctica de lineout y touche',
+    ['p02','p03','p04','p05','p06','p08','p09','p10','p15','p17','p18','p19']),
+  mkSession('s06','2026-06-14','Partido','Amistoso vs. CRAR',
+    ['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12','p13','p14','p15']),
+  mkSession('s07','2026-06-11','Entrenamiento','Preparación física y técnica',
+    ['p01','p02','p03','p07','p08','p09','p10','p12','p14','p15','p16','p20']),
+  mkSession('s08','2026-06-09','Scrum','Práctica de scrum y situaciones fijas',
+    ['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p15','p17','p18']),
+];
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let players = [];
+let sessions = [];
+let currentView = 'sessions';
+let editingId = null; // session being edited (attendance view)
+
+/* ══════════════════════════════════════════════
+   STORAGE
+══════════════════════════════════════════════ */
+function loadData(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){
+      const d = JSON.parse(raw);
+      players = d.players || SAMPLE_PLAYERS;
+      sessions = d.sessions || [];
+    } else {
+      players = SAMPLE_PLAYERS;
+      sessions = SAMPLE_SESSIONS;
+      persist();
+    }
+  } catch {
+    players = SAMPLE_PLAYERS;
+    sessions = SAMPLE_SESSIONS;
+  }
+}
+function persist(){ localStorage.setItem(LS_KEY, JSON.stringify({players, sessions})); }
+
+/* ══════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════ */
+function uid(){ return Date.now().toString(36) + Math.floor(performance.now()*1000).toString(36); }
+function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function gradFor(id){ let h=0; for(const c of id) h=(h*31+c.charCodeAt(0))%AVATAR_G.length; return AVATAR_G[h]; }
+function initials(n){ return n.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?'; }
+function tcol(tipo){ return TYPE_COLORS[tipo]||'#22c55e'; }
+
+function fmtDay(ts){ return new Date(ts).getDate(); }
+function fmtMonth(ts){
+  return ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][new Date(ts).getMonth()];
+}
+function fmtFull(ts){
+  const d = new Date(ts);
+  const dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  return `${dias[d.getDay()]} ${d.getDate()} ${fmtMonth(ts)} ${d.getFullYear()}`;
+}
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════ */
+function nav(v){
+  currentView = v;
+  editingId = null;
+  ['sessions','stats','plantel'].forEach(x=>{
+    document.getElementById('view-'+x).classList.toggle('hidden', x!==v);
+    document.getElementById('nav-'+x).classList.toggle('active', x===v);
+  });
+  const subs = {sessions:'Asistencia', stats:'Estadísticas del plantel', plantel:'Gestión del plantel'};
+  document.getElementById('topbar-sub').textContent = subs[v];
+  document.getElementById('fab').style.display = v==='sessions' ? 'flex' : 'none';
+  window.scrollTo({top:0});
+  if(v==='sessions') renderSessions();
+  else if(v==='stats') renderStats();
+  else if(v==='plantel') renderPlantel();
+}
+
+/* ══════════════════════════════════════════════
+   SESSIONS LIST
+══════════════════════════════════════════════ */
+function renderSessions(){
+  if(editingId !== null){ renderAttendance(); return; }
+  const el = document.getElementById('view-sessions');
+  document.getElementById('fab').style.display = 'flex';
+  const sorted = [...sessions].sort((a,b)=>b.fecha-a.fecha);
+
+  let html = `<div class="view-title">Sesiones</div>
+    <div class="view-sub">${sessions.length} sesión${sessions.length!==1?'es':''} registrada${sessions.length!==1?'s':''}</div>`;
+
+  if(!sorted.length){
+    html += `<div class="empty">
+      <div class="empty-ico"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div>
+      <h4>Sin sesiones</h4>
+      <p>Tocá el + para crear tu primera sesión y empezar a tomar asistencia.</p>
+      <button class="btn btn-primary" style="margin-top:18px;max-width:260px" onclick="openNewSession()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva sesión
+      </button>
+    </div>`;
+  } else {
+    html += '<div class="session-list">';
+    sorted.forEach((s,i)=>{
+      const pct = players.length ? Math.round(s.presentes.length / players.length * 100) : 0;
+      const tc = tcol(s.tipo);
+      html += `<div class="session-card" style="--i:${i}" onclick="openAttendance('${s.id}')">
+        <div class="session-date-box">
+          <div class="session-day">${fmtDay(s.fecha)}</div>
+          <div class="session-month">${fmtMonth(s.fecha)}</div>
+        </div>
+        <div class="session-info">
+          <div class="session-tipo" style="color:${tc}">${esc(s.tipo)}</div>
+          <div class="session-desc">${esc(s.descripcion||s.tipo)}</div>
+          <div class="session-meta">${fmtFull(s.fecha)}</div>
+        </div>
+        <div class="session-right">
+          <div class="att-count" style="color:${s.presentes.length===players.length&&players.length?'var(--green)':'var(--txt)'}">${s.presentes.length}</div>
+          <div class="att-total">de ${players.length}</div>
+          <div class="att-bar"><div class="att-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════
+   ATTENDANCE VIEW
+══════════════════════════════════════════════ */
+function openAttendance(id){
+  editingId = id;
+  renderAttendance();
+}
+
+function renderAttendance(){
+  const el = document.getElementById('view-sessions');
+  const s = sessions.find(x=>x.id===editingId);
+  if(!s){ editingId=null; renderSessions(); return; }
+  document.getElementById('fab').style.display = 'none';
+
+  const total = players.length;
+  const pres = s.presentes.length;
+  const pct = total ? Math.round(pres/total*100) : 0;
+  const tc = tcol(s.tipo);
+
+  let html = `
+    <button class="back-btn" onclick="closeAttendance()">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Volver
+    </button>
+    <div class="att-header">
+      <div class="att-tipo" style="color:${tc}">${esc(s.tipo)}</div>
+      <div class="att-title">${esc(s.descripcion||s.tipo)}</div>
+      <div class="att-subtitle">${fmtFull(s.fecha)}</div>
+      <div class="att-counter-row">
+        <div>
+          <span id="att-big-num" class="att-big-num">${pres}</span>
+          <span class="att-big-den"> de ${total} presentes</span>
+        </div>
+        <div class="att-pct-label" id="att-pct-label">${pct}%</div>
+      </div>
+      <div class="att-bigbar"><div class="att-bigbar-fill" id="att-bigbar" style="width:${pct}%"></div></div>
+      <div class="att-actions">
+        <button class="btn-sm" onclick="markAll()">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+          Todos
+        </button>
+        <button class="btn-sm" onclick="clearAll()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+          Ninguno
+        </button>
+        <button class="btn-sm danger" onclick="deleteSession('${s.id}')">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="sec-head">
+      <h3>Jugadores</h3>
+      <span class="count-pill" id="att-pill">${pres} presentes</span>
+    </div>
+    <div class="player-grid">
+  `;
+
+  [...players].sort((a,b)=>a.numero-b.numero).forEach((p,i)=>{
+    const present = s.presentes.includes(p.id);
+    html += `<div class="player-card ${present?'presente':''}" id="pc-${p.id}" style="--i:${i}" onclick="togglePlayer('${p.id}')">
+      <div class="player-card-top">
+        <div class="player-num">#${p.numero}</div>
+        <div class="player-check"><svg class="check-svg" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      </div>
+      <div class="player-name">${esc(p.nombre)}</div>
+      <div class="player-pos">${POS_LABELS[p.posicion]||p.posicion}</div>
+    </div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function closeAttendance(){
+  editingId = null;
+  renderSessions();
+  window.scrollTo({top:0});
+}
+
+function togglePlayer(pid){
+  const s = sessions.find(x=>x.id===editingId);
+  if(!s) return;
+  const idx = s.presentes.indexOf(pid);
+  if(idx >= 0) s.presentes.splice(idx, 1);
+  else s.presentes.push(pid);
+  persist();
+
+  const card = document.getElementById('pc-'+pid);
+  if(card) card.classList.toggle('presente', s.presentes.includes(pid));
+
+  const pres = s.presentes.length;
+  const total = players.length;
+  const pct = total ? Math.round(pres/total*100) : 0;
+  const numEl = document.getElementById('att-big-num');
+  if(numEl) numEl.textContent = pres;
+  const fill = document.getElementById('att-bigbar');
+  if(fill) fill.style.width = pct+'%';
+  const pill = document.getElementById('att-pill');
+  if(pill) pill.textContent = pres+' presentes';
+  const pctEl = document.getElementById('att-pct-label');
+  if(pctEl) pctEl.textContent = pct+'%';
+}
+
+function markAll(){
+  const s = sessions.find(x=>x.id===editingId);
+  if(!s) return;
+  s.presentes = players.map(p=>p.id);
+  persist(); renderAttendance();
+}
+
+function clearAll(){
+  const s = sessions.find(x=>x.id===editingId);
+  if(!s) return;
+  s.presentes = [];
+  persist(); renderAttendance();
+}
+
+function deleteSession(id){
+  openConfirm('¿Eliminar esta sesión?','Se borra el registro de asistencia. No se puede deshacer.','Eliminar',()=>{
+    sessions = sessions.filter(x=>x.id!==id);
+    persist(); editingId=null; renderSessions();
+    toast('Sesión eliminada');
+  });
+}
+
+/* ══════════════════════════════════════════════
+   NEW SESSION SHEET
+══════════════════════════════════════════════ */
+let _tipo = 'Entrenamiento';
+function openNewSession(){
+  _tipo = 'Entrenamiento';
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('sheet-title').textContent = 'Nueva sesión';
+  document.getElementById('sheet-body').innerHTML = `
+    <div class="field"><label>Fecha</label>
+      <input type="date" id="f-fecha" value="${today}">
+    </div>
+    <div class="field"><label>Tipo</label>
+      <div class="tipo-chips" id="tipo-chips">
+        ${SESSION_TYPES.map(t=>`<span class="tipo-chip ${t==='Entrenamiento'?'sel':''}" onclick="pickTipo('${t}')">${t}</span>`).join('')}
+      </div>
+    </div>
+    <div class="field"><label>Descripción (opcional)</label>
+      <input type="text" id="f-desc" placeholder="Ej: Trabajo de backs y defensa">
+    </div>
+    <button class="btn btn-primary" onclick="createSession()">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Comenzar asistencia
+    </button>
+  `;
+  openSheet();
+  setTimeout(()=>document.getElementById('f-desc')?.focus(), 300);
+}
+
+function pickTipo(t){
+  _tipo = t;
+  document.querySelectorAll('.tipo-chip').forEach(el=>el.classList.toggle('sel', el.textContent===t));
+}
+
+function createSession(){
+  const fecha = document.getElementById('f-fecha').value;
+  const desc = (document.getElementById('f-desc').value||'').trim();
+  if(!fecha){ toast('Seleccioná una fecha',false); return; }
+  const s = {
+    id: uid(),
+    fecha: new Date(fecha+'T12:00:00').getTime(),
+    tipo: _tipo,
+    descripcion: desc || _tipo,
+    presentes: [],
+    createdAt: Date.now()
+  };
+  sessions.unshift(s);
+  persist();
+  closeSheet();
+  nav('sessions');
+  openAttendance(s.id);
+}
+
+/* ══════════════════════════════════════════════
+   STATS
+══════════════════════════════════════════════ */
+function renderStats(){
+  const el = document.getElementById('view-stats');
+  if(!sessions.length){
+    el.innerHTML = `<div class="view-title">Estadísticas</div><div class="view-sub">Historial del plantel</div>
+      <div class="empty"><div class="empty-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg></div>
+      <h4>Sin datos aún</h4><p>Registrá sesiones para ver las estadísticas del equipo.</p></div>`;
+    return;
+  }
+
+  const totalSes = sessions.length;
+  const totalPres = sessions.reduce((acc,s)=>acc+s.presentes.length,0);
+  const avgPres = Math.round(totalPres/totalSes);
+  const avgPct = players.length ? Math.round(avgPres/players.length*100) : 0;
+
+  // player ranking
+  const pRank = players.map(p=>{
+    const n = sessions.filter(s=>s.presentes.includes(p.id)).length;
+    return {...p, n, pct: totalSes ? Math.round(n/totalSes*100) : 0};
+  }).sort((a,b)=>b.n-a.n||a.numero-b.numero);
+
+  const top = pRank[0];
+
+  // chart: last 8 sessions sorted by date
+  const chart = [...sessions].sort((a,b)=>a.fecha-b.fecha).slice(-8);
+  const maxPres = Math.max(1,...chart.map(s=>s.presentes.length));
+  const BAR_MAX = 56; // pixels
+
+  let html = `
+    <div class="view-title">Estadísticas</div>
+    <div class="view-sub">Historial de ${totalSes} sesiones</div>
+    <div class="stat-grid">
+      <div class="stat-card" style="--i:0">
+        <div class="stat-val">${totalSes}</div>
+        <div class="stat-label">Sesiones realizadas</div>
+      </div>
+      <div class="stat-card" style="--i:1">
+        <div class="stat-val">${avgPct}%</div>
+        <div class="stat-label">Asistencia promedio</div>
+      </div>
+      <div class="stat-card" style="--i:2">
+        <div class="stat-val">${avgPres}</div>
+        <div class="stat-label">Jugadores por sesión (promedio)</div>
+      </div>
+      <div class="stat-card" style="--i:3">
+        <div class="stat-val" style="font-size:20px;padding-top:4px">${top?esc(top.nombre.split(' ')[0]):'—'}</div>
+        <div class="stat-label">Más asistencias (${top?top.n:0} de ${totalSes})</div>
+      </div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-title">Asistencia por sesión · últimas ${chart.length}</div>
+      <div class="chart-bars">
+        ${chart.map(s=>{
+          const barH = Math.max(3, Math.round(s.presentes.length / maxPres * BAR_MAX));
+          const tc = tcol(s.tipo);
+          return `<div class="chart-col">
+            <div class="chart-bar-wrap">
+              <div class="chart-bar" style="height:${barH}px;background:linear-gradient(180deg,${tc}cc,${tc})"></div>
+            </div>
+            <div class="chart-lbl">${fmtDay(s.fecha)}/${fmtMonth(s.fecha).slice(0,1)}</div>
+            <div class="chart-val">${s.presentes.length}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="sec-head"><h3>Ranking de asistencia</h3><span class="count-pill">${players.length}</span></div>
+    <div class="player-stats-wrap">
+  `;
+
+  pRank.forEach((p,i)=>{
+    const g = gradFor(p.id);
+    const rk = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+    const rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
+    html += `<div class="pstat">
+      <div class="pstat-rank ${rc}">${rk}</div>
+      <div class="pstat-av" style="background:linear-gradient(135deg,${g[0]},${g[1]})">${initials(p.nombre)}</div>
+      <div class="pstat-info">
+        <div class="pstat-name">${esc(p.nombre)}</div>
+        <div class="pstat-pos">#${p.numero} · ${POS_LABELS[p.posicion]||p.posicion}</div>
+        <div class="pstat-bar-wrap"><div class="pstat-bar" style="width:${p.pct}%"></div></div>
+      </div>
+      <div class="pstat-right">
+        <div class="pstat-pct" style="color:${p.pct>=80?'var(--green)':p.pct>=50?'var(--amber)':'var(--muted)'}">${p.pct}%</div>
+        <div class="pstat-det">${p.n}/${totalSes}</div>
+      </div>
+    </div>`;
+  });
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════
+   PLANTEL
+══════════════════════════════════════════════ */
+function renderPlantel(){
+  const el = document.getElementById('view-plantel');
+  let html = `<div class="view-title">Plantel</div>
+    <div class="view-sub">${players.length} jugadores registrados</div>
+    <button class="btn btn-primary" style="margin-bottom:18px" onclick="openAddPlayer()">
+      <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+      Agregar jugador
+    </button>`;
+
+  if(!players.length){
+    html += `<div class="empty"><div class="empty-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      <h4>Sin jugadores</h4><p>Agregá los integrantes del equipo para empezar a tomar asistencia.</p></div>`;
+  } else {
+    html += `<div class="sec-head"><h3>Jugadores</h3><span class="count-pill">${players.length}</span></div>`;
+    [...players].sort((a,b)=>a.numero-b.numero).forEach((p,i)=>{
+      html += `<div class="plantel-card" style="--i:${i}">
+        <div class="pj-num">${p.numero}</div>
+        <div class="pj-info">
+          <div class="pj-name">${esc(p.nombre)}</div>
+          <div class="pj-pos">${POS_LABELS[p.posicion]||p.posicion}</div>
+        </div>
+        <button class="pj-del" onclick="confirmDelPlayer('${p.id}')">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        </button>
+      </div>`;
+    });
+  }
+  el.innerHTML = html;
+}
+
+function openAddPlayer(){
+  document.getElementById('sheet-title').textContent = 'Nuevo jugador';
+  document.getElementById('sheet-body').innerHTML = `
+    <div class="field"><label>Nombre completo</label>
+      <input type="text" id="pj-nombre" placeholder="Ej: Matías Torres" autocomplete="off">
+    </div>
+    <div class="field"><label>Número de camiseta</label>
+      <input type="number" id="pj-numero" placeholder="Ej: 9" min="1" max="99" inputmode="numeric">
+    </div>
+    <div class="field"><label>Posición</label>
+      <select id="pj-pos">
+        ${Object.entries(POS_LABELS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="savePlayer()">
+      <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+      Guardar jugador
+    </button>
+  `;
+  openSheet();
+  setTimeout(()=>document.getElementById('pj-nombre')?.focus(), 300);
+}
+
+function savePlayer(){
+  const nombre = (document.getElementById('pj-nombre').value||'').trim();
+  const numero = parseInt(document.getElementById('pj-numero').value||'0');
+  const posicion = document.getElementById('pj-pos').value;
+  if(!nombre){ toast('Poné el nombre del jugador', false); return; }
+  if(!numero || numero < 1 || numero > 99){ toast('Número de camiseta inválido', false); return; }
+  players.push({id:uid(), nombre, numero, posicion});
+  persist();
+  closeSheet();
+  renderPlantel();
+  toast('Jugador agregado ✓');
+}
+
+function confirmDelPlayer(id){
+  const p = players.find(x=>x.id===id);
+  if(!p) return;
+  openConfirm(
+    `¿Eliminar a ${p.nombre}?`,
+    'Se quita del plantel. Los registros históricos de asistencia se conservan.',
+    'Eliminar',
+    ()=>{
+      players = players.filter(x=>x.id!==id);
+      persist();
+      closeSheet();
+      renderPlantel();
+      toast('Jugador eliminado');
+    }
+  );
+}
+
+/* ══════════════════════════════════════════════
+   SHEET / CONFIRM
+══════════════════════════════════════════════ */
+function openSheet(){
+  document.getElementById('sheet').classList.add('open');
+  document.getElementById('sheet-scrim').classList.add('open');
+}
+function closeSheet(){
+  document.getElementById('sheet').classList.remove('open');
+  document.getElementById('sheet-scrim').classList.remove('open');
+}
+function openConfirm(title, msg, btnTxt, cb){
+  document.getElementById('sheet-title').textContent = title;
+  document.getElementById('sheet-body').innerHTML = `
+    ${msg?`<p style="font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:20px">${esc(msg)}</p>`:'<div style="height:8px"></div>'}
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeSheet()">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-yes">${esc(btnTxt)}</button>
+    </div>
+  `;
+  openSheet();
+  document.getElementById('confirm-yes').onclick = ()=>{ cb(); };
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+let _toastTm;
+function toast(msg, ok=true){
+  const t = document.getElementById('toast');
+  const ic = ok
+    ? '<svg viewBox="0 0 24 24" style="stroke:#4ade80"><path d="M20 6L9 17l-5-5"/></svg>'
+    : '<svg viewBox="0 0 24 24" style="stroke:#fca5a5"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="10"/></svg>';
+  t.innerHTML = ic + `<span>${esc(msg)}</span>`;
+  t.classList.add('show');
+  clearTimeout(_toastTm);
+  _toastTm = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+loadData();
+nav('sessions');
+</script>
+</body>
+</html>
