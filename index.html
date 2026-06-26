@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0b1a0e">
-<title>Rugby · Asistencia</title>
+<title>Rugby M19 · Asistencia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2316a34a'/><ellipse cx='50' cy='50' rx='26' ry='18' stroke='white' stroke-width='7' fill='none' transform='rotate(-25 50 50)'/><line x1='28' y1='57' x2='72' y2='43' stroke='white' stroke-width='6' stroke-linecap='round'/></svg>">
@@ -213,7 +213,7 @@ input,textarea,select{font-family:inherit}
         <svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="7" ry="5" transform="rotate(-25 12 12)"/><line x1="5.5" y1="14" x2="18.5" y2="10"/></svg>
       </div>
       <div>
-        <div class="brand-name">Rugby<span>·Plantel</span></div>
+        <div class="brand-name">Rugby<span>·M19</span></div>
         <div class="topbar-sub" id="topbar-sub">Asistencia</div>
       </div>
     </div>
@@ -267,9 +267,9 @@ input,textarea,select{font-family:inherit}
 const LS_KEY = 'rugby-asistencia-v1';
 
 const POS_LABELS = {
-  PR:'Pilier D.', H:'Hooker', PP:'Pilier I.', L:'Lock',
-  F:'Flanker', N8:'Nº 8', SH:'Scrum Half',
-  FH:'Apertura', C:'Centro', W:'Ala', FB:'Full'
+  PL:'Primera Línea', SL:'Segunda Línea', F:'Ala',
+  SH:'Medio Scrum', FH:'Apertura', C:'Centro', W:'Wing', FB:'Full Back',
+  '?':'—'
 };
 
 const SESSION_TYPES = ['Entrenamiento','Físico','Técnico','Táctico','Scrum','Lineout','Partido'];
@@ -288,50 +288,119 @@ const AVATAR_G = [
    SAMPLE DATA
 ══════════════════════════════════════════════ */
 const SAMPLE_PLAYERS = [
-  {id:'p01',nombre:'Lucas Fernández',numero:1,posicion:'PR'},
-  {id:'p02',nombre:'Matías Torres',numero:2,posicion:'H'},
-  {id:'p03',nombre:'Ramiro González',numero:3,posicion:'PP'},
-  {id:'p04',nombre:'Franco Rodríguez',numero:4,posicion:'L'},
-  {id:'p05',nombre:'Nicolás Pérez',numero:5,posicion:'L'},
-  {id:'p06',nombre:'Tomás Martínez',numero:6,posicion:'F'},
-  {id:'p07',nombre:'Santiago López',numero:7,posicion:'F'},
-  {id:'p08',nombre:'Joaquín Díaz',numero:8,posicion:'N8'},
-  {id:'p09',nombre:'Agustín Gómez',numero:9,posicion:'SH'},
-  {id:'p10',nombre:'Ignacio Suárez',numero:10,posicion:'FH'},
-  {id:'p11',nombre:'Sebastián Castro',numero:11,posicion:'W'},
-  {id:'p12',nombre:'Ezequiel Morales',numero:12,posicion:'C'},
-  {id:'p13',nombre:'Gabriel Romero',numero:13,posicion:'C'},
-  {id:'p14',nombre:'Rodrigo Giménez',numero:14,posicion:'W'},
-  {id:'p15',nombre:'Pablo Herrera',numero:15,posicion:'FB'},
-  {id:'p16',nombre:'Cristian Vargas',numero:16,posicion:'PR'},
-  {id:'p17',nombre:'Andrés Molina',numero:17,posicion:'PP'},
-  {id:'p18',nombre:'Diego Acosta',numero:18,posicion:'L'},
-  {id:'p19',nombre:'Mauricio Silva',numero:19,posicion:'F'},
-  {id:'p20',nombre:'Federico Ríos',numero:20,posicion:'SH'},
+  {id:'r001',nombre:'Aguirre Miranda, Tomas',numero:1,posicion:'SH'},
+  {id:'r002',nombre:'Aguirre, Mateo',numero:2,posicion:'F'},
+  {id:'r003',nombre:'Alejandro Magnano, Nicolas',numero:3,posicion:'C'},
+  {id:'r004',nombre:'Altamirano, Cristobal',numero:4,posicion:'?'},
+  {id:'r005',nombre:'Alvarez Quiñones, Joaquin',numero:5,posicion:'PL'},
+  {id:'r006',nombre:'Antonio Gimenez, Francisco',numero:6,posicion:'PL'},
+  {id:'r007',nombre:'Antonio Nores Calderoni, Jorge',numero:7,posicion:'F'},
+  {id:'r008',nombre:'Asef, Felipe',numero:8,posicion:'F'},
+  {id:'r009',nombre:'Balacco Bertero, Felipe',numero:9,posicion:'SL'},
+  {id:'r010',nombre:'Belaustegui, Felipe',numero:10,posicion:'SL'},
+  {id:'r011',nombre:'Bessone, Felipe',numero:11,posicion:'FB'},
+  {id:'r012',nombre:'Binda, Tomas',numero:12,posicion:'W'},
+  {id:'r013',nombre:'Blando Molina, Nicolás',numero:13,posicion:'C'},
+  {id:'r014',nombre:'Borioli, Manuel',numero:14,posicion:'FH'},
+  {id:'r015',nombre:'Bosch, Santiago',numero:15,posicion:'W'},
+  {id:'r016',nombre:'Brizuela, Iñaki',numero:16,posicion:'F'},
+  {id:'r017',nombre:'Cafaro, Felipe',numero:17,posicion:'F'},
+  {id:'r018',nombre:'Cardozo, Maximo',numero:18,posicion:'PL'},
+  {id:'r019',nombre:'Carrara, Felipe',numero:19,posicion:'F'},
+  {id:'r020',nombre:'Cesano, Benjamin Lucas',numero:20,posicion:'W'},
+  {id:'r021',nombre:'Chamale, Anuar',numero:21,posicion:'SL'},
+  {id:'r022',nombre:'Chicco, Valentino',numero:22,posicion:'?'},
+  {id:'r023',nombre:'Cingolani, Lucio',numero:23,posicion:'FB'},
+  {id:'r024',nombre:'Ciotta, Tobias',numero:24,posicion:'W'},
+  {id:'r025',nombre:'De Benito, Santiago',numero:25,posicion:'SH'},
+  {id:'r026',nombre:'Delia, Joaquin',numero:26,posicion:'FH'},
+  {id:'r027',nombre:'Echeverria, Angelo',numero:27,posicion:'SL'},
+  {id:'r028',nombre:'Ernesto Guevara Ortiz, Tomás',numero:28,posicion:'?'},
+  {id:'r029',nombre:'Fajre, Federico',numero:29,posicion:'PL'},
+  {id:'r030',nombre:'Farias, Dylan',numero:30,posicion:'?'},
+  {id:'r031',nombre:'Fernandez Pugliese, Bautista',numero:31,posicion:'C'},
+  {id:'r032',nombre:'Fierro, Francisco',numero:32,posicion:'PL'},
+  {id:'r033',nombre:'Fontan, Lautaro',numero:33,posicion:'C'},
+  {id:'r034',nombre:'Franco Curvino, Salvador',numero:34,posicion:'FB'},
+  {id:'r035',nombre:'Gaston Perez, Mauro',numero:35,posicion:'C'},
+  {id:'r036',nombre:'Gerez, Elias',numero:36,posicion:'PL'},
+  {id:'r037',nombre:'Gonzalez, Agustin',numero:37,posicion:'FB'},
+  {id:'r038',nombre:'Gonzalez, Sebastian',numero:38,posicion:'F'},
+  {id:'r039',nombre:'Granero Torres, Benjamin',numero:39,posicion:'SL'},
+  {id:'r040',nombre:'Hued Koutsoubos, Ari',numero:40,posicion:'PL'},
+  {id:'r041',nombre:'Ignacio Cavallero, Juan',numero:41,posicion:'F'},
+  {id:'r042',nombre:'Infante, Lucca',numero:42,posicion:'FH'},
+  {id:'r043',nombre:'Irusta, Bruno',numero:43,posicion:'C'},
+  {id:'r044',nombre:'Javier Perez Garcia, Gonzalo',numero:44,posicion:'PL'},
+  {id:'r045',nombre:'Jose Dei Rossi, Santino',numero:45,posicion:'SL'},
+  {id:'r046',nombre:'Juarez Bricca, Lautaro',numero:46,posicion:'W'},
+  {id:'r047',nombre:'Labiuk, Juan Cruz',numero:47,posicion:'FB'},
+  {id:'r048',nombre:'Llorvandi, Maximo',numero:48,posicion:'F'},
+  {id:'r049',nombre:'Luis Cazaux, Juan',numero:49,posicion:'C'},
+  {id:'r050',nombre:'Lunas, Tobias',numero:50,posicion:'FH'},
+  {id:'r051',nombre:'Luti Bitar, Felipe',numero:51,posicion:'FB'},
+  {id:'r052',nombre:'López Olivero, Julian',numero:52,posicion:'C'},
+  {id:'r053',nombre:'López, Fabrizio',numero:53,posicion:'?'},
+  {id:'r054',nombre:'Marco Aime, Tobias',numero:54,posicion:'C'},
+  {id:'r055',nombre:'Mariano Rossi Comito, Felipe',numero:55,posicion:'PL'},
+  {id:'r056',nombre:'Martinez, Facundo',numero:56,posicion:'F'},
+  {id:'r057',nombre:'Martín Sánchez Castellano, Álvaro',numero:57,posicion:'W'},
+  {id:'r058',nombre:'Mazzuferi, Santiago',numero:58,posicion:'F'},
+  {id:'r059',nombre:'Mendoza Finzi, León',numero:59,posicion:'?'},
+  {id:'r060',nombre:'Mendoza, Leon',numero:60,posicion:'PL'},
+  {id:'r061',nombre:'Molina, Alvaro',numero:61,posicion:'SL'},
+  {id:'r062',nombre:'Moya, Augusto',numero:62,posicion:'SH'},
+  {id:'r063',nombre:'Murua, Benjamin',numero:63,posicion:'F'},
+  {id:'r064',nombre:'Narda, Felipe',numero:64,posicion:'W'},
+  {id:'r065',nombre:'Navarro Quirinali, Maximo',numero:65,posicion:'W'},
+  {id:'r066',nombre:'Nicolás Bazán Spena, Franco',numero:66,posicion:'PL'},
+  {id:'r067',nombre:'Oglietti Aguirre, Martin',numero:67,posicion:'W'},
+  {id:'r068',nombre:'Ojeda, Manuel',numero:68,posicion:'SH'},
+  {id:'r069',nombre:'Olaran, Axel',numero:69,posicion:'W'},
+  {id:'r070',nombre:'Ortiz Araya, Jeronimo',numero:70,posicion:'FH'},
+  {id:'r071',nombre:'Ouro, Juan cruz',numero:71,posicion:'PL'},
+  {id:'r072',nombre:'Paolini, Santiago',numero:72,posicion:'SH'},
+  {id:'r073',nombre:'Patocchi Arrieta, Mateo',numero:73,posicion:'SH'},
+  {id:'r074',nombre:'Patricio Barreiro Riga, Facundo',numero:74,posicion:'W'},
+  {id:'r075',nombre:'Peral Aden, Agustín',numero:75,posicion:'SH'},
+  {id:'r076',nombre:'Perec Larroque, Bautista',numero:76,posicion:'F'},
+  {id:'r077',nombre:'Piumetto, Mateo',numero:77,posicion:'SL'},
+  {id:'r078',nombre:'Pizzi, Santino',numero:78,posicion:'PL'},
+  {id:'r079',nombre:'Pollitzer, Santiago',numero:79,posicion:'SL'},
+  {id:'r080',nombre:'Prado Ercoli, Joaquin',numero:80,posicion:'C'},
+  {id:'r081',nombre:'Ramos Martinez, Santiago',numero:81,posicion:'PL'},
+  {id:'r082',nombre:'Robinson, Martin',numero:82,posicion:'FH'},
+  {id:'r083',nombre:'Roldan, Valentin',numero:83,posicion:'FB'},
+  {id:'r084',nombre:'Ruggieri Almada, Ignacio',numero:84,posicion:'PL'},
+  {id:'r085',nombre:'Ruiz Orrico, Juan Cruz',numero:85,posicion:'PL'},
+  {id:'r086',nombre:'Sangoy Cafferata, Francisco',numero:86,posicion:'C'},
+  {id:'r087',nombre:'Sanmillan Seguro, Francisco',numero:87,posicion:'SL'},
+  {id:'r088',nombre:'Santino Cervatto, Matheo',numero:88,posicion:'F'},
+  {id:'r089',nombre:'Scalvenzi, Ignacio',numero:89,posicion:'W'},
+  {id:'r090',nombre:'Simon Elizondo Garcia, Francisco',numero:90,posicion:'FB'},
+  {id:'r091',nombre:'Spongia, Homero',numero:91,posicion:'?'},
+  {id:'r092',nombre:'Stempels Rivero, Ignacio',numero:92,posicion:'W'},
+  {id:'r093',nombre:'Tamagno Damiani, Agustin',numero:93,posicion:'F'},
+  {id:'r094',nombre:'Tay, Mateo',numero:94,posicion:'SL'},
+  {id:'r095',nombre:'Tejeda, Lautaro',numero:95,posicion:'C'},
+  {id:'r096',nombre:'Tiago Avendaño Cruz, Gastón',numero:96,posicion:'W'},
+  {id:'r097',nombre:'Toledo Toselli, Augusto',numero:97,posicion:'F'},
+  {id:'r098',nombre:'Traverssi, Benicio',numero:98,posicion:'F'},
+  {id:'r099',nombre:'Triay, Octavio',numero:99,posicion:'W'},
+  {id:'r100',nombre:'Vaccarini, Francisco',numero:100,posicion:'SL'},
+  {id:'r101',nombre:'Valentin Guzmán Ladino, Emanuel',numero:101,posicion:'?'},
+  {id:'r102',nombre:'Valentino, Tinto',numero:102,posicion:'FB'},
+  {id:'r103',nombre:'Valentín Vigna, Gino',numero:103,posicion:'F'},
+  {id:'r104',nombre:'Vazquez, Felipe',numero:104,posicion:'FB'},
+  {id:'r105',nombre:'Vazquez, Lautaro',numero:105,posicion:'F'},
+  {id:'r106',nombre:'Vicente Pioli Diaz, Martino',numero:106,posicion:'W'},
+  {id:'r107',nombre:'Vigo, Francisco',numero:107,posicion:'F'},
+  {id:'r108',nombre:'Villalonga, Manuel',numero:108,posicion:'W'},
+  {id:'r109',nombre:'Vivani, Giuliano',numero:109,posicion:'W'},
+  {id:'r110',nombre:'Zarate, Tomas',numero:110,posicion:'SH'},
 ];
 
-function mkSession(id, dateStr, tipo, desc, pids){
-  return {id, fecha: new Date(dateStr+'T12:00:00').getTime(), tipo, descripcion: desc, presentes: pids, createdAt: Date.now()};
-}
-
-const SAMPLE_SESSIONS = [
-  mkSession('s01','2026-06-25','Entrenamiento','Pretemporada · fuerza y velocidad',
-    ['p01','p02','p03','p04','p06','p07','p08','p09','p10','p12','p13','p14','p15','p16','p19']),
-  mkSession('s02','2026-06-23','Técnico','Trabajo de lineout y melé',
-    ['p01','p02','p03','p04','p05','p07','p09','p10','p11','p12','p15','p17','p18']),
-  mkSession('s03','2026-06-21','Físico','Resistencia aeróbica + circuito',
-    ['p01','p02','p04','p06','p07','p08','p09','p10','p12','p14','p15','p19','p20']),
-  mkSession('s04','2026-06-18','Táctico','Jugadas de backs · ataque',
-    ['p01','p03','p05','p07','p09','p10','p11','p12','p13','p14','p15','p16']),
-  mkSession('s05','2026-06-16','Lineout','Práctica de lineout y touche',
-    ['p02','p03','p04','p05','p06','p08','p09','p10','p15','p17','p18','p19']),
-  mkSession('s06','2026-06-14','Partido','Amistoso vs. CRAR',
-    ['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12','p13','p14','p15']),
-  mkSession('s07','2026-06-11','Entrenamiento','Preparación física y técnica',
-    ['p01','p02','p03','p07','p08','p09','p10','p12','p14','p15','p16','p20']),
-  mkSession('s08','2026-06-09','Scrum','Práctica de scrum y situaciones fijas',
-    ['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p15','p17','p18']),
-];
+const SAMPLE_SESSIONS = [];
 
 /* ══════════════════════════════════════════════
    STATE
